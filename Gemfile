@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby "2.0.0"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
@@ -7,7 +8,7 @@ gem 'rails', '4.0.0'
 gem 'sqlite3'
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.0'
+gem 'sass-rails'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
@@ -31,6 +32,37 @@ group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
 end
+
+gem 'haml-rails'
+gem 'twitter-bootstrap-rails'
+gem "naught"
+
+group :development do
+  gem 'quiet_assets'
+  gem 'better_errors'
+  gem 'binding_of_caller'
+end
+
+group :test do
+  gem 'database_cleaner'
+  gem 'fivemat'
+  gem "cucumber-rails", :require => false
+end
+
+group :development, :test do
+  gem 'factory_girl_rails'
+  gem 'rspec-rails'
+  gem 'rspec-given'
+  gem 'capybara'
+  gem "awesome_print"
+  gem "pry"
+  gem "teaspoon"
+  gem "zeus"
+end
+
+gem "devise", '3.0.0.rc'
+
+
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
