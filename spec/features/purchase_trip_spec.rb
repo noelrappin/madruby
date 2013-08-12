@@ -56,7 +56,7 @@ describe "purchasing a trip" do
       trip = order.trip_item
       expect(trip.unit_price).to eq(1200)
       expect(trip.amount).to eq(1)
-      expect(trip.total_price).to eq(1200)
+      expect(trip.extended_price).to eq(1200)
       expect(trip.processing_fee).to eq(3)
     end
 
@@ -65,7 +65,7 @@ describe "purchasing a trip" do
       hotel = order.hotel_item
       expect(hotel.unit_price).to eq(500)
       expect(hotel.amount).to eq(4)
-      expect(hotel.total_price).to eq(2000)
+      expect(hotel.extended_price).to eq(2000)
       expect(hotel.processing_fee).to eq(10)
     end
 
@@ -74,7 +74,7 @@ describe "purchasing a trip" do
       activity = order.activity_items.first
       expect(activity.unit_price).to eq(400)
       expect(activity.amount).to eq(1)
-      expect(activity.total_price).to eq(400)
+      expect(activity.extended_price).to eq(400)
       expect(activity.processing_fee).to eq(5)
     end
 
@@ -85,5 +85,29 @@ describe "purchasing a trip" do
 
   end
 
+  describe "with coupon codes" do
+
+    before do
+      CouponCode.create!(code: "HALF_OFF", discount_percentage: 50)
+      visit("/trips/#{mayflower.id}")
+      select('4', :from => 'length_of_stay')
+      choose("hotel_id_#{mayflower.hotels.first.id}")
+      check("activity_id_#{mayflower.activities.first.id}")
+      fill_in("coupon_code", with: "HALF_OFF")
+      click_button("Order")
+    end
+
+    it "correctly discounts the trip itself" do
+      order = Order.last
+      trip = order.trip_item
+      expect(trip.unit_price).to eq(1200)
+      expect(trip.amount).to eq(1)
+      expect(trip.extended_price).to eq(1200)
+      expect(trip.discount).to eq(600)
+      expect(trip.processing_fee).to eq(3)
+      expect(trip.price_paid).to eq(603)
+    end
+
+  end
 
 end

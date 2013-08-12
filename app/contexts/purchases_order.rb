@@ -1,10 +1,12 @@
 class PurchasesOrder
 
-  attr_accessor :length_of_stay
+  attr_accessor :length_of_stay, :user
   
-  def initialize(trip_id, hotel_id, activity_ids, length_of_stay)
+  def initialize(user, trip_id, hotel_id, activity_ids, length_of_stay, code)
+    @user = user
     @trip_id, @hotel_id, @activity_ids = trip_id, hotel_id, activity_ids
     @length_of_stay = length_of_stay
+    @code = code
   end
 
   def trip
@@ -19,18 +21,21 @@ class PurchasesOrder
     @activities ||= @activity_ids.map { |id| Activity.find(id) }
   end
 
+  def coupon_code
+    @coupon_code ||= CouponCode.find_by_code(@code)
+  end
+
   def order
-    @order ||= Order.new
+    @order ||= Order.new(user: user)
   end
 
   def add_line_item(buyable, unit_price, amount, calculator_class)
-    order.order_line_items.new(buyable: buyable, unit_price: unit_price,
-        amount: amount, total_price: amount * unit_price,
-        processing_fee: calculator_class.new(buyable).fee.to_f)
+    OrderLineItemFactory.new(order, buyable, unit_price,
+        amount, coupon_code, calculator_class).run
   end
 
   def calculate_order_price
-    order.order_line_items.map(&:price_plus_processing).sum.to_f + 10
+    order.order_line_items.map(&:price_paid).sum.to_f + 10
   end
 
   def run

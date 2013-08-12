@@ -1,6 +1,7 @@
 class Order < ActiveRecord::Base
 
   has_many :order_line_items
+  belongs_to :user
 
   def trip_item
     order_line_items.where(buyable_type: "Trip").first

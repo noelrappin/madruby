@@ -14,6 +14,9 @@
 
     %h3 Activity Options
     = render @trip.activities
+    %br
+    %h3 Coupon Code
+    = text_field_tag :coupon_code
 
     %br
   = f.submit "Order"

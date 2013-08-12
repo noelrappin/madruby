@@ -11,8 +11,9 @@ class AddOrder < ActiveRecord::Migration
       t.references :buyable, polymorphic: true
       t.integer :amount
       t.decimal :unit_price, :precision => 10, :scale => 2
+      t.decimal :extended_price, :precision => 10, :scale => 2
       t.decimal :processing_fee, :precision => 10, :scale => 2
-      t.decimal :total_price, :precision => 10, :scale => 2
+      t.decimal :price_paid, :precision => 10, :scale => 2
       t.timestamps
     end
   end
