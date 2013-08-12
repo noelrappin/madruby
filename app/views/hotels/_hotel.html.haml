@@ -1,0 +1,3 @@
+%div[hotel]
+  = radio_button_tag(:hotel_id, hotel.id, false)
+  = "#{hotel.name}: #{hotel.description} (#{number_to_currency(hotel.price)})"

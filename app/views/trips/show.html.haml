@@ -1,0 +1,19 @@
+%h1= @trip.name
+
+%h2 Booking Options
+
+= form_for Order.new do |f|
+  .options
+
+    %h3 Hotel Options
+
+    .length_of_stay Number of nights
+    = hidden_field_tag :trip_id, @trip.id
+    = select_tag :length_of_stay, @trip.length_of_stay_options, include_blank: true
+    = render @trip.hotels
+
+    %h3 Activity Options
+    = render @trip.activities
+
+    %br
+  = f.submit "Order"

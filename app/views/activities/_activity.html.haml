@@ -1,0 +1,3 @@
+%div[activity]
+  = check_box_tag(:"activity_id[]", activity.id, false, id: "activity_id_#{activity.id}")
+  = "#{activity.name}: #{activity.description} (#{number_to_currency(activity.price)})"

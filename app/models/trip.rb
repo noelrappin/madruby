@@ -4,4 +4,8 @@ class Trip < ActiveRecord::Base
 
   validates_presence_of :description, :start_date, :end_date, :price, :tag_line
 
+  def length_of_trip
+    end_date - start_date
+  end
+
 end
