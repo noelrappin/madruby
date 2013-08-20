@@ -2,14 +2,11 @@
 
 Clone this repository:
 
-    % git://github.com/noelrappin/madruby.git
+    % git clone git://github.com/noelrappin/madruby.git
 
 Move into the repository directory
 
     % cd madruby
-
-If you use RVM, you will be prompted to accept the .rvmrc file, which assumes
-Ruby 2.0.0
 
 Install gems -- install bunder if needed
 
@@ -25,6 +22,15 @@ are already seeded with data.
 Run the application with
 
     % rails server
+    
+If you use RVM, and this command errors with something like "bin/rails:3: undefined method `require_relative'", you'll need to
+cd out of the directory and back into it
+
+    % cd ..
+    
+    % cd madruby
+    
+This reloads the rvm version
 
 Hit it in the browser at http://localhost:3000
 
