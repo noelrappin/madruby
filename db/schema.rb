@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130712212606) do
+ActiveRecord::Schema.define(version: 20130812020305) do
 
   create_table "activities", force: true do |t|
     t.integer  "trip_id"
@@ -24,6 +24,14 @@ ActiveRecord::Schema.define(version: 20130712212606) do
 
   add_index "activities", ["trip_id"], name: "index_activities_on_trip_id"
 
+  create_table "coupon_codes", force: true do |t|
+    t.integer  "discount_percentage"
+    t.string   "applies_to"
+    t.string   "code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "hotels", force: true do |t|
     t.integer  "trip_id"
     t.string   "name"
@@ -35,6 +43,28 @@ ActiveRecord::Schema.define(version: 20130712212606) do
   end
 
   add_index "hotels", ["trip_id"], name: "index_hotels_on_trip_id"
+
+  create_table "order_line_items", force: true do |t|
+    t.integer  "order_id"
+    t.integer  "buyable_id"
+    t.string   "buyable_type"
+    t.integer  "amount"
+    t.decimal  "unit_price",     precision: 10, scale: 2
+    t.decimal  "extended_price", precision: 10, scale: 2
+    t.decimal  "processing_fee", precision: 10, scale: 2
+    t.decimal  "price_paid",     precision: 10, scale: 2
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "promo_code_id"
+    t.decimal  "discount",       precision: 10, scale: 2
+  end
+
+  create_table "orders", force: true do |t|
+    t.decimal  "total_price_paid", precision: 10, scale: 2
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "trips", force: true do |t|
     t.string   "name"
