@@ -48,4 +48,23 @@ describe "purchasing a trip" do
     end
   end
 
+  it "correctly puts pricing in the line item objects" do
+    visit("/trips/#{mayflower.id}")
+    select('4', :from => 'length_of_stay')
+    choose("hotel_id_#{mayflower.hotels.first.id}")
+    check("activity_id_#{mayflower.activities.first.id}")
+    click_button("Order")
+    order = Order.last
+    expect(order.trip_item.unit_price).to eq(1200)
+    expect(order.trip_item.amount).to eq(1)
+    expect(order.trip_item.total_price).to eq(1200)
+    expect(order.hotel_item.unit_price).to eq(500)
+    expect(order.hotel_item.amount).to eq(4)
+    expect(order.hotel_item.total_price).to eq(2000)
+    expect(order.activity_items.first.unit_price).to eq(400)
+    expect(order.activity_items.first.amount).to eq(1)
+    expect(order.activity_items.first.total_price).to eq(400)
+    expect(order.total_price_paid).to eq(3600)
+  end
+
 end
