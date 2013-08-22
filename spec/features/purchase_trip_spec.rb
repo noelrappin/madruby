@@ -35,36 +35,54 @@ describe "purchasing a trip" do
   end
 
   describe "basic process" do
-    it "creates order and line item objects" do
+
+    before(:each) do
       visit("/trips/#{mayflower.id}")
       select('4', :from => 'length_of_stay')
       choose("hotel_id_#{mayflower.hotels.first.id}")
       check("activity_id_#{mayflower.activities.first.id}")
       click_button("Order")
+    end
+
+    it "creates order and line item objects" do
       order = Order.last
       expect(order.order_line_items.count).to eq(3)
       expect(order.order_line_items.map(&:buyable)).to eq(
           [mayflower, mayflower.hotels.first, mayflower.activities.first])
     end
-  end
 
-  it "correctly puts pricing in the line item objects" do
-    visit("/trips/#{mayflower.id}")
-    select('4', :from => 'length_of_stay')
-    choose("hotel_id_#{mayflower.hotels.first.id}")
-    check("activity_id_#{mayflower.activities.first.id}")
-    click_button("Order")
-    order = Order.last
-    expect(order.trip_item.unit_price).to eq(1200)
-    expect(order.trip_item.amount).to eq(1)
-    expect(order.trip_item.extended_price).to eq(1200)
-    expect(order.hotel_item.unit_price).to eq(500)
-    expect(order.hotel_item.amount).to eq(4)
-    expect(order.hotel_item.extended_price).to eq(2000)
-    expect(order.activity_items.first.unit_price).to eq(400)
-    expect(order.activity_items.first.amount).to eq(1)
-    expect(order.activity_items.first.extended_price).to eq(400)
-    expect(order.total_price_paid).to eq(3600)
+    it "correctly puts pricing in the trip line item objects" do
+      order = Order.last
+      trip = order.trip_item
+      expect(trip.unit_price).to eq(1200)
+      expect(trip.amount).to eq(1)
+      expect(trip.extended_price).to eq(1200)
+      expect(trip.processing_fee).to eq(3)
+    end
+
+    it "correctly puts pricing in the hotel line item objects" do
+      order = Order.last
+      hotel = order.hotel_item
+      expect(hotel.unit_price).to eq(500)
+      expect(hotel.amount).to eq(4)
+      expect(hotel.extended_price).to eq(2000)
+      expect(hotel.processing_fee).to eq(10)
+    end
+
+    it "correctly puts pricing in the activity line item objects" do
+      order = Order.last
+      activity = order.activity_items.first
+      expect(activity.unit_price).to eq(400)
+      expect(activity.amount).to eq(1)
+      expect(activity.extended_price).to eq(400)
+      expect(activity.processing_fee).to eq(5)
+    end
+
+    it "correctly puts pricing in the order object" do
+      order = Order.last
+      expect(order.total_price_paid).to eq(3600 + 3 + 10 + 5 + 10)
+    end
+
   end
 
 end
